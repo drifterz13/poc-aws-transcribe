@@ -3,7 +3,6 @@ import * as Transcribe from './libs/transcribe'
 
 const record = document.querySelector<HTMLButtonElement>('.record')!
 const stopButton = document.querySelector<HTMLButtonElement>('.stop')!
-// const soundClips = document.querySelector<HTMLElement>('.sound-clips')!
 const transcript = document.querySelector<HTMLElement>('.transcript')!
 
 function writeTranscript(content: string) {

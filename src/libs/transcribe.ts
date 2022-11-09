@@ -73,15 +73,15 @@ async function startStreaming(
   })
 
   const data = await transcribeClient!.send(command)
-  console.log('transicript result stream: ', data?.TranscriptResultStream ?? [])
 
   for await (const event of data?.TranscriptResultStream ?? []) {
     for (const result of event.TranscriptEvent?.Transcript?.Results ?? []) {
       if (result.IsPartial === false) {
         const [alternativeResult] = result.Alternatives ?? []
-        const noOfResults = (alternativeResult.Items ?? []).length
+        const items = alternativeResult.Items ?? []
+        const noOfResults = items.length
         for (let i = 0; i < noOfResults; i++) {
-          const content = (alternativeResult.Items ?? [])[i].Content ?? '' + ' '
+          const content = items[i].Content ?? '' + ' '
 
           console.log(content)
           callback(content)
