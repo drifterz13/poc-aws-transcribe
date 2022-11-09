@@ -7,8 +7,8 @@ import { Buffer } from 'buffer'
 import * as awsID from './awsID'
 
 const SAMPLE_RATE = 44100
-let microphoneStream: MicrophoneStream | undefined
-let transcribeClient: TranscribeStreamingClient | undefined
+let microphoneStream: MicrophoneStream
+let transcribeClient: TranscribeStreamingClient
 
 export async function startRecording(
   language: string,
@@ -29,11 +29,9 @@ export function stopRecording() {
   if (microphoneStream) {
     microphoneStream.stop()
     microphoneStream.destroy()
-    microphoneStream = undefined
   }
   if (transcribeClient) {
     transcribeClient.destroy()
-    transcribeClient = undefined
   }
 }
 
@@ -44,7 +42,6 @@ function createTranscribeClient() {
       client: new CognitoIdentityClient({ region: awsID.REGION }),
       identityPoolId: awsID.IDENTITY_POOL_ID,
     }),
-    maxAttempts: 5,
   })
 }
 
@@ -72,7 +69,7 @@ async function startStreaming(
     AudioStream: getAudioStream(),
   })
 
-  const data = await transcribeClient!.send(command)
+  const data = await transcribeClient.send(command)
 
   for await (const event of data?.TranscriptResultStream ?? []) {
     for (const result of event.TranscriptEvent?.Transcript?.Results ?? []) {
@@ -92,7 +89,7 @@ async function startStreaming(
 }
 
 async function* getAudioStream() {
-  for await (const chunk of microphoneStream!) {
+  for await (const chunk of microphoneStream) {
     if (chunk.length <= SAMPLE_RATE) {
       yield {
         AudioEvent: {
