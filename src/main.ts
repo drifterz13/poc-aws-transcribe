@@ -24,6 +24,11 @@ function handleSuccess(stream: MediaStream) {
   mediaRecorder.addEventListener('stop', () => {
     console.log('record stop')
 
+    const audioName = prompt(
+      'Give your audio a name!',
+      `audio-id-${Math.round(Math.random() * 1e3)}`
+    )
+
     const clipContainer = document.createElement('article')
     const clipLabel = document.createElement('p')
     const audio = document.createElement('audio')
@@ -32,7 +37,7 @@ function handleSuccess(stream: MediaStream) {
     clipContainer.classList.add('clip')
     audio.setAttribute('controls', '')
     deleteButton.innerHTML = 'Delete'
-    clipLabel.innerHTML = 'audio-01'
+    clipLabel.innerHTML = audioName ?? ''
 
     clipContainer.appendChild(audio)
     clipContainer.appendChild(clipLabel)
